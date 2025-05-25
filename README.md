@@ -24,19 +24,12 @@ cd BSSeqDuplexConsensusReads
 
 ## Configuration
 
-Edit `config.yaml` to customize parameters:
+Edit `config.yaml`, especially the global parameters, to customize parameters:
 ```yaml
 global:
   tmp_dir: "tmp"
   picard_path: "/path/to/picard.jar"
   # Tool paths and global settings
-
-rules:
-  call_consensus_reads_molecular:
-    threads: 20
-    xmx: "100g"
-    others: [{"extra_param": "value"}]  # Custom arguments
-  # Other rule configurations...
 ```
 
 ## Usage

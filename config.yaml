@@ -1,82 +1,97 @@
 rules:
   call_consensus_reads_molecular:
-    xmx: "100g"
-    error_rate_pre_umi: 45
-    min_consensus_base_quality: 0
-    consensus_call_overlapping_bases: "true"
-    error_rate_post_umi: 30
-    min_input_base_quality: 0
-    min_reads: 1
-    threads: 20
-    others: []
+    params: >
+      -Xmx100g --tmp-dir={tmp_dir}
+      CallMolecularConsensusReads
+      --error-rate-pre-umi=45
+      --min-consensus-base-quality=0
+      --consensus-call-overlapping-bases=true
+      --error-rate-post-umi=30
+      --min-input-base-quality=0
+      --threads=20
+      --min-reads=1
 
   duplex_metrics:
-    threads: 10
-    others: []
+    params: >
+      CollectDuplexSeqMetrics
+      -i {input}
+      -o {output}
 
   consensus_to_fq_unfiltered:
-    compression_level: 5
-    include_non_pf_reads: "true"
-    threads: 5
-    others: []
+    params: >
+      SamToFastq
+      I={input}
+      F={output1}
+      F2={output2}
+      VALIDATION_STRINGENCY=SILENT
 
   align_consensus_unfiltered:
-    aligner_options: "--read-group-id RG1"
-    samtools_options: "-q 20"
-    threads: 20
-    others: []
+    params: >
+      --reference {genome_dir}/{genome_fasta}
+      -t 20
+      {input1} {input2}
+      2> {log} | samtools view -h -b -o {output}
 
   mergeAunA_consensus:
-    xmx: "100G"
-    sort_memory: "2G"
-    validation_stringency: "SILENT"
-    threads: 20
-    others: []
+    params: >
+      sort -@ 20 --no-PG -n {input} | 
+      fgbio -Xmx100G --tmp-dir={tmp_dir} ZipperBams
+      --unmapped {unmapped}
+      --ref {genome_dir}/{genome_fasta}
+      --output {output}
+      --sort Coordinate
 
   mergeAunA_consensus_grepaligned:
-    samtools_flags: "-F 4"
-    threads: 10
-    others: []
+    params: >
+      view -h -b -F 4
+      -o {output} {input}
 
   convert_Bstrain:
-    threads: 20
-    others: []
+    params: >
+      tools/1.convert_AG_to_CT.py
+      --reference {genome_dir}/{genome_fasta}
+      {input} {output}
 
   extend:
-    extend_length: 10
-    threads: 10
-    others: []
+    params: >
+      tools/2.extend_gap.py
+      -i {input}
+      -o {output}
 
   groupsort_convert:
-    xmx: "60G"
-    sort_order: "TemplateCoordinate"
-    tmp_dir: "tmp"
-    threads: 20
-    others: []
+    params: >
+      -Xmx60G
+      SortBam
+      -s TemplateCoordinate
+      -i {input}
+      -o {output}
 
   callduplex:
-    xmx: "100g"
-    error_rate_pre_umi: 45
-    error_rate_post_umi: 30
-    min_input_base_quality: 0
-    min_reads: 0
-    consensus_overlap_mode: "AGGREGATE"
-    threads: 20
-    others: []
+    params: >
+      -Xmx100g --tmp-dir={tmp_dir}
+      CallDuplexConsensusReads
+      --input={input}
+      --output={output}
+      --consensus-call-overlapping-bases=true
+      --error-rate-pre-umi=45
+      --error-rate-post-umi=30
+      --min-input-base-quality=0
+      --threads=20
+      --min-reads=0
 
   align_consensus_unfiltered_duplex:
-    aligner_options: "--read-group-id RG2"
-    samtools_options: "-q 20"
-    threads: 20
-    others: []
+    params: >
+      --reference {genome_dir}/{genome_fasta}
+      -t 20
+      {input1} {input2}
+      2> {log} | samtools view -h -b -o {output}
 
 global:
-  tmp_root: "./tmp"
-  genome_dir: "/path/to/ref/dir"
-  genome_fasta: "fasta_name.fa"
-  picard_path: "/opt/picard.jar"
-  fgbio_path: "/usr/local/bin/fgbio"
-  bwameth_path: "/usr/local/bin/bwameth.py"
-  samtools_path: "/usr/bin/samtools"
-  python_path: "/usr/bin/python3"
-  tools_dir: "./tools"
+  tmp_dir: "auto_temp"
+  genome_dir: "/to/genome/dir"
+  genome_fasta: "genome.fa"
+  picard: "java -jar ~/software/picard.jar"
+  fgbio: "fgbio"
+  samtools: "samtools"
+  bwameth: "bwameth.py"
+  python: "python3"
