@@ -1,4 +1,4 @@
-# Methylation Analysis Pipeline
+# BSSeqConsensusReads
 
 A tool for calling duplex consensus reads generated from BS-seq / EM-seq libraries with 2-side UMIs.
 
