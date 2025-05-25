@@ -43,7 +43,7 @@ rules:
 
 Basic execution:
 ```bash
-python pipeline.py \
+python main.py \
   --input-bam input/sample_grouped.bam \
   --output-bam output/sample_final.bam \
   --dataset project_name \
