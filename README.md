@@ -19,7 +19,7 @@ A tool for calling duplex consensus reads generated from BS-seq / EM-seq librari
 
 ```bash
 git clone https://github.com/Wubeizhongxinghua/BSSeqConsensusReads.git
-cd methylation-pipeline
+cd BSSeqDuplexConsensusReads
 ```
 
 ## Configuration
