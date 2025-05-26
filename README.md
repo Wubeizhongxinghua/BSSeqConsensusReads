@@ -26,6 +26,7 @@ The output bam file is like the output of `fgbio CallDuplexConsensusReads --min-
 ```bash
 git clone https://github.com/Wubeizhongxinghua/BSSeqConsensusReads.git
 cd BSSeqDuplexConsensusReads
+mkdir -p input
 ```
 
 ## Configuration
