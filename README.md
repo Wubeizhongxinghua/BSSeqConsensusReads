@@ -47,7 +47,8 @@ picard_path: "/path/to/picard.jar"
 
 2. Move or softlink your input bam into ./input directory.
 
-> [!IMPORTANT] The input bam requires:
+> [!IMPORTANT] 
+> The input bam requires:
 > - Input bam must be the output of `fgbio GroupReadsByUmi`, all prerequisite steps follow standard fgbio pipeline.
 > - The RX tag stands for UMI information.
 > - The MI tag stands for UMI group information, requiring `-s Paired` of `fgbio GroupReadsByUmi`.
