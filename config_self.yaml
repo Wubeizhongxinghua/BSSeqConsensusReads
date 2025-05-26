@@ -1,0 +1,11 @@
+genome_dir: "/appsnew/home/myli/lustre2/hg38"
+genome_fasta_file_name: "hg38_only_chromsomes.fa"
+tools_dir: "./tools"
+tmp: "tmp"
+
+fgbio: "fgbio"
+java: "java"
+bwameth: "bwameth.py"
+samtools: "samtools"
+python3: "python3"
+picard_path: "~/software/picard.jar"

@@ -2,6 +2,12 @@
 
 A tool for calling duplex consensus reads generated from BS-seq / EM-seq libraries with 2-side UMIs.
 
+## Input & Output Information
+
+The input bam file is the output of `fgbio GroupReadsByUmi` command under parameter `-s Paired`.
+
+The output bam file is like the output of `fgbio CallDuplexConsensusReads --min-reads=0 --consensus-call-overlapping-bases=true`, which is **not filtered**.
+
 ## Prerequisites
 
 - Python 3.6+
@@ -12,7 +18,7 @@ A tool for calling duplex consensus reads generated from BS-seq / EM-seq librari
   - `samtools` (v1.10+)
 - Python packages:
   ```bash
-  pip install pyyaml click pysam
+  pip install pyyaml click pysam rich rich_click
   ```
 
 ## Installation
@@ -24,29 +30,39 @@ cd BSSeqDuplexConsensusReads
 
 ## Configuration
 
-Edit `config.yaml`, especially the global parameters, to customize parameters:
+1. Edit `config.yaml`, make sure all the parameters are set.
 ```yaml
-global:
-  tmp_dir: "tmp"
-  picard_path: "/path/to/picard.jar"
-  # Tool paths and global settings
+genome_dir: "/path/to/genome_dir"
+genome_fasta_file_name: "genome.fa"
+tools_dir: "./tools"
+tmp: "/path/to/tmp"
+
+fgbio: "/path/to/fgbio"
+java: "/path/to/java"
+bwameth: "/path/to/bwameth.py"
+samtools: "/path/to/samtools"
+python3: "/path/to/python3"
+picard_path: "/path/to/picard.jar"
 ```
+
+2. Move or softlink your input bam into ./input directory.
+
+> [!IMPORTANT] The input bam requires:
+> - Input bam must be the output of `fgbio GroupReadsByUmi`, all prerequisite steps follow standard fgbio pipeline.
+> - The RX tag stands for UMI information.
+> - The MI tag stands for UMI group information, requiring `-s Paired` of `fgbio GroupReadsByUmi`.
+
 
 ## Usage
 
 Basic execution:
 ```bash
-python main.py \
-  --input-bam input/sample_grouped.bam \
-  --output-bam output/sample_final.bam \
-  --dataset project_name \
-  --sample-id sample123
+snakemake -s main.snake.py -c 20 --rerun-incomplete -pr --rerun-triggers mtime --configfile config_self.yaml --config bam="input/test.bam"
 ```
 
 Options:
-- `--config-file`: Custom config file (default: config.yaml)
-- `--tmp-dir`: Temporary directory for intermediates (auto-cleaned by default)
-- `--keep-tmp`: Retain temporary files
+- `--configfile`: Custom config file (default: config.yaml).
+- `--config`: Set your bam file.
 
 ## Workflow Overview
 
@@ -63,7 +79,5 @@ Options:
 ## Notes
 
 - **Memory Requirements**: Minimum 100GB RAM recommended for consensus steps
-- **Intermediate Files**: Stored in `output/{dataset}/bwameth_results/`
-- **Logs**: Available in `output/{dataset}/log/`
-- Customize parameters via `others` field in config.yaml for tool-specific flags
+- **Intermediate Files**: Stored in `output/`
 

@@ -1,97 +1,11 @@
-rules:
-  call_consensus_reads_molecular:
-    params: >
-      -Xmx100g --tmp-dir={tmp_dir}
-      CallMolecularConsensusReads
-      --error-rate-pre-umi=45
-      --min-consensus-base-quality=0
-      --consensus-call-overlapping-bases=true
-      --error-rate-post-umi=30
-      --min-input-base-quality=0
-      --threads=20
-      --min-reads=1
+genome_dir: "/path/to/genome_dir"
+genome_fasta_file_name: "genome.fa"
+tools_dir: "./tools"
+tmp: "/path/to/tmp"
 
-  duplex_metrics:
-    params: >
-      CollectDuplexSeqMetrics
-      -i {input}
-      -o {output}
-
-  consensus_to_fq_unfiltered:
-    params: >
-      SamToFastq
-      I={input}
-      F={output1}
-      F2={output2}
-      VALIDATION_STRINGENCY=SILENT
-
-  align_consensus_unfiltered:
-    params: >
-      --reference {genome_dir}/{genome_fasta}
-      -t 20
-      {input1} {input2}
-      2> {log} | samtools view -h -b -o {output}
-
-  mergeAunA_consensus:
-    params: >
-      sort -@ 20 --no-PG -n {input} | 
-      fgbio -Xmx100G --tmp-dir={tmp_dir} ZipperBams
-      --unmapped {unmapped}
-      --ref {genome_dir}/{genome_fasta}
-      --output {output}
-      --sort Coordinate
-
-  mergeAunA_consensus_grepaligned:
-    params: >
-      view -h -b -F 4
-      -o {output} {input}
-
-  convert_Bstrain:
-    params: >
-      tools/1.convert_AG_to_CT.py
-      --reference {genome_dir}/{genome_fasta}
-      {input} {output}
-
-  extend:
-    params: >
-      tools/2.extend_gap.py
-      -i {input}
-      -o {output}
-
-  groupsort_convert:
-    params: >
-      -Xmx60G
-      SortBam
-      -s TemplateCoordinate
-      -i {input}
-      -o {output}
-
-  callduplex:
-    params: >
-      -Xmx100g --tmp-dir={tmp_dir}
-      CallDuplexConsensusReads
-      --input={input}
-      --output={output}
-      --consensus-call-overlapping-bases=true
-      --error-rate-pre-umi=45
-      --error-rate-post-umi=30
-      --min-input-base-quality=0
-      --threads=20
-      --min-reads=0
-
-  align_consensus_unfiltered_duplex:
-    params: >
-      --reference {genome_dir}/{genome_fasta}
-      -t 20
-      {input1} {input2}
-      2> {log} | samtools view -h -b -o {output}
-
-global:
-  tmp_dir: "auto_temp"
-  genome_dir: "/to/genome/dir"
-  genome_fasta: "genome.fa"
-  picard: "java -jar ~/software/picard.jar"
-  fgbio: "fgbio"
-  samtools: "samtools"
-  bwameth: "bwameth.py"
-  python: "python3"
+fgbio: "/path/to/fgbio"
+java: "/path/to/java"
+bwameth: "/path/to/bwameth.py"
+samtools: "/path/to/samtools"
+python3: "/path/to/python3"
+picard_path: "/path/to/picard.jar"
