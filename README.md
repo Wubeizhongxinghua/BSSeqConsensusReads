@@ -1,4 +1,4 @@
-# BSSeqConsensusReads
+# BSSeqDuplexConsensusReads
 
 A tool for calling duplex consensus reads generated from BS-seq / EM-seq libraries with 2-side UMIs.
 
@@ -24,7 +24,7 @@ The output bam file is like the output of `fgbio CallDuplexConsensusReads --min-
 ## Installation
 
 ```bash
-git clone https://github.com/Wubeizhongxinghua/BSSeqConsensusReads.git
+git clone https://github.com/Wubeizhongxinghua/BSSeqDuplexConsensusReads.git
 cd BSSeqDuplexConsensusReads
 mkdir -p input
 ```
